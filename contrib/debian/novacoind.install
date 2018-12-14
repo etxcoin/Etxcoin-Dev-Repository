@@ -1,0 +1,2 @@
+debian/bin/ETXCOINd usr/bin
+src/ETXCOINd usr/lib/ETXCOIN

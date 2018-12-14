@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# PROVIDE: ETXCOIN
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# ETXCOIN_enable (bool): Set to NO by default. Set this variable to YES if you want to enable ETXCOIN service.
+# ETXCOIN_config (path): Set to /usr/local/etc/ETXCOIN.conf by default.
+# ETXCOIN_user:  The user account ETXCOIN daemon runs as. It uses 'root' user by default.
+# ETXCOIN_group: The group account ETXCOIN daemon runs as. It uses 'wheel' group by default.
+# ETXCOIN_datadir (str): Default to "/var/db/ETXCOIN". Base data directory.
+
+. /etc/rc.subr
+
+name=ETXCOIN
+rcvar=ETXCOIN_enable
+
+: ${ETXCOIN_enable:=NO}
+: ${ETXCOIN_config=/usr/local/etc/ETXCOIN.conf}
+: ${ETXCOIN_datadir=/var/db/ETXCOIN}
+: ${ETXCOIN_user="root"}
+: ${ETXCOIN_group="wheel"}
+
+required_files=${ETXCOIN_config}
+command=/usr/local/bin/ETXCOINd
+ETXCOIN_chdir=${ETXCOIN_datadir}
+pidfile="${ETXCOIN_datadir}/ETXCOINd.pid"
+stop_cmd=ETXCOIN_stop
+command_args="-conf=${ETXCOIN_config} -datadir=${ETXCOIN_datadir} -daemon -pid=${pidfile}"
+start_precmd="${name}_prestart"
+
+ETXCOIN_create_datadir()
+{
+	echo "Creating data directory"
+	eval mkdir -p ${ETXCOIN_datadir}
+	[ $? -eq 0 ] && chown -R ${ETXCOIN_user}:${ETXCOIN_group} ${ETXCOIN_datadir}
+}
+
+ETXCOIN_prestart()
+{
+	if [ ! -d "${ETXCOIN_datadir}/." ]; then
+		ETXCOIN_create_datadir || return 1
+	fi
+}
+
+ETXCOIN_requirepidfile()
+{
+	if [ ! "0`check_pidfile ${pidfile} ${command}`" -gt 1 ]; then
+		echo "${name} not running? (check $pidfile)."
+		exit 1
+	fi
+}
+
+ETXCOIN_stop()
+{
+    ETXCOIN_requirepidfile
+
+	echo "Stopping ${name}."
+	eval ${command} -conf=${ETXCOIN_config} -datadir=${ETXCOIN_datadir} stop
+	wait_for_pids ${rc_pid}
+}
+
+load_rc_config $name
+run_rc_command "$1"

@@ -1,0 +1,11 @@
+[Unit]
+Description=ETXCOIN daemon serivce
+After=network.target
+
+[Service]
+Type=simple
+User=ETXCOIN
+ExecStart=/opt/ETXCOIN/ETXCOINd
+
+[Install]
+WantedBy=multi-user.target

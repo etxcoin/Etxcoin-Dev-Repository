@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ETXCOIN
+Comment=ETXCOIN P2P Cryptocurrency
+Comment[ru]=ETXCOIN, P2P криптовалюта
+Comment[fr]=ETXCOIN, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=ETXCOIN, eşten eşe kriptografik sanal para birimi
+Exec=/usr/bin/ETXCOIN-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/ETXCOIN80.xpm
+MimeType=x-scheme-handler/ETXCOIN;
+Categories=Office;
