@@ -1,2 +1,1 @@
-RPC Port: 14895
-Network Port: 14894
+Etxcoin Src Repository
