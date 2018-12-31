@@ -1,0 +1,61 @@
+The daemon
+
+Ubuntu (14.04 x64)
+
+Swapfile if your system has less than 1.5GB of memory:
+
+fallocate -l 2G /swapfile
+chown root:root /swapfile
+chmod 0600 /swapfile
+sudo bash -c “echo ‘vm.swappiness = 10’ >> /etc/sysctl.conf”
+mkswap /swapfile
+swapon /swapfile
+
+Fallocate error use:
+
+dd if=/dev/zero of=/swapfile bs=1024 count=1024288
+
+Initialize swapfile automatically on boot:
+
+echo ‘/swapfile none swap sw 0 0’ >> /etc/fstab
+
+Install all required dependencies:
+
+apt-get update && apt-get upgrade
+apt-get install nano ntp unzip git build-essential libssl-dev libdb-dev libdb++-dev libboost-all-dev libqrencode-dev aptitude && aptitude install miniupnpc libminiupnpc-dev
+
+Pull the source code from github, or upload it yourself:
+
+cd /ETXCOIN/src/leveldb
+chmod +x build_detect_platform
+make clean
+make libleveldb.a libmemenv.a
+
+Return to source directory, and compile the daemon:
+
+cd /ETXCOIN/src
+make -f makefile.unix
+
+Strip the file to make it smaller, then relocate it:
+
+strip ETXCOINd
+cp ETXCOINd/usr/bin
+
+Now run the daemon:
+
+ETXCOINd
+
+It will return an error, telling you to set up config file in a directory. Now we’ll set up the config file. Note that this is case sensitive.
+
+nano ~/.ETXCOIN/ETXCOIN.conf
+
+Add the following, save and exit:
+
+daemon=1
+server=1
+rpcuser=(username)
+rpcpassword=(strong password)
+
+Run ETXCOINd once more and if you did everything correctly, your daemon is now online!
+
+Type ETXCOINd help for a full list of commands available.
